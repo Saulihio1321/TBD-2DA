@@ -1,0 +1,142 @@
+MySQL Shell 9.6.0
+
+Copyright (c) 2016, 2026, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 8.0.45 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create databases taller2;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'databases taller2' at line 1
+ MySQL  localhost:3306 ssl  SQL > create database taller2;
+Query OK, 1 row affected (0.0052 sec)
+ MySQL  localhost:3306 ssl  SQL > use taller2;
+Default schema set to `taller2`.
+Fetching global names, object names from `taller2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  taller2  SQL > create table producto(
+                                        -> idproducto, int not null auto_increment key
+                                        -> , nombre varchar(50) not null,
+                                        -> precio decimal(7,2));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', int not null auto_increment key
+, nombre varchar(50) not null,
+precio decimal(' at line 2
+ MySQL  localhost:3306 ssl  taller2  SQL > create table producto(idproducto, int not null auto_increment key, nombre varchar(50) not null, precio decimal(7,2));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', int not null auto_increment key, nombre varchar(50) not null, precio decimal(7' at line 1
+ MySQL  localhost:3306 ssl  taller2  SQL > create table producto(idproducto int not null auto_increment key, nombre varchar(50) not null, precio decimal(7,2));
+Query OK, 0 rows affected (0.0220 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > creaye table cliente(
+                                        -> idcliente int not null auto_increment key,
+                                        -> nombre varchar(50) not null,
+                                        -> apellidos varchar(50),
+                                        -> tipo enum("FISICA", "MORAL") default FISICA,
+                                        -> RFC varchar(50));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'creaye table cliente(
+idcliente int not null auto_increment key,
+nombre varchar(' at line 1
+ MySQL  localhost:3306 ssl  taller2  SQL > create table cliente( idcliente int not null auto_increment key, nombre varchar(50) not null, apellidos varchar(50), tipo enum("FISICA", "MORAL") default FISICA, RFC varchar(50));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FISICA, RFC varchar(50))' at line 1
+ MySQL  localhost:3306 ssl  taller2  SQL > create table cliente( idcliente int not null auto_increment key, nombre varchar(50) not null, apellidos varchar(50), tipo enum("FISICA", "MORAL") default "FISICA", RFC varchar(50));
+Query OK, 0 rows affected (0.0214 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > create table venta(idventa int not null auto_increment,
+                                        -> fecha date not null,
+                                        -> idcliente int not null,
+                                        -> ;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+ MySQL  localhost:3306 ssl  taller2  SQL > create table venta(idventa int not null auto_increment, fecha date not null, idcliente int not null);
+ERROR: 1075 (42000): Incorrect table definition; there can be only one auto column and it must be defined as a key
+ MySQL  localhost:3306 ssl  taller2  SQL > create table venta(idventa int not null auto_increment key, fecha date not null, idcliente int not null);
+Query OK, 0 rows affected (0.0199 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > create table venta_detalle(
+                                        -> idventa_detalle int not null auto_increment key,
+                                        -> idventa int not null,
+                                        -> idproducto int not null,
+                                        -> cantidad int not null);
+Query OK, 0 rows affected (0.0232 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into producto(nombre, precio)
+                                        -> values("doritos", "25"), ("kilo de tortillas", "26"), ("chocolate", "20");
+Query OK, 3 rows affected (0.0176 sec)
+
+Records: 3  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  taller2  SQL > select from producto;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'from producto' at line 1
+ MySQL  localhost:3306 ssl  taller2  SQL > select * from producto;
++------------+-------------------+--------+
+| idproducto | nombre            | precio |
++------------+-------------------+--------+
+|          1 | doritos           |  25.00 |
+|          2 | kilo de tortillas |  26.00 |
+|          3 | chocolate         |  20.00 |
++------------+-------------------+--------+
+3 rows in set (0.0011 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into producto(nombre, rfc)  values("PEPE", "1234567891234"), ("CHOPPER", "1234567891234"), ("CACO", "1234567891234");
+ERROR: 1054 (42S22): Unknown column 'rfc' in 'field list'
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into producto(nombre, rfc)  values("PEPE", "123456789asdw"), ("CHOPPER", "123456789asdw"), ("CACO", "123456789asdw");
+ERROR: 1054 (42S22): Unknown column 'rfc' in 'field list'
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into cliente(nombre, rfc)  values("PEPE", "123456789asdw"), ("CHOPPER", "123456789asdw"), ("CACO", "123456789asdw");
+Query OK, 3 rows affected (0.0083 sec)
+
+Records: 3  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  taller2  SQL > select * from cliente;
++-----------+---------+-----------+--------+---------------+
+| idcliente | nombre  | apellidos | tipo   | RFC           |
++-----------+---------+-----------+--------+---------------+
+|         1 | PEPE    | NULL      | FISICA | 123456789asdw |
+|         2 | CHOPPER | NULL      | FISICA | 123456789asdw |
+|         3 | CACO    | NULL      | FISICA | 123456789asdw |
++-----------+---------+-----------+--------+---------------+
+3 rows in set (0.0017 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > desc venta;
++-----------+------+------+-----+---------+----------------+
+| Field     | Type | Null | Key | Default | Extra          |
++-----------+------+------+-----+---------+----------------+
+| idventa   | int  | NO   | PRI | NULL    | auto_increment |
+| fecha     | date | NO   |     | NULL    |                |
+| idcliente | int  | NO   |     | NULL    |                |
++-----------+------+------+-----+---------+----------------+
+3 rows in set (0.0083 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into venta(fecha, idcliente)
+                                        -> values("2026-03-09", 1), ("2026-02-02", 2), ("2025-03-04", 1), ("2026-03-09", 4);
+Query OK, 4 rows affected (0.0049 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  taller2  SQL > select * from venta;
++---------+------------+-----------+
+| idventa | fecha      | idcliente |
++---------+------------+-----------+
+|       1 | 2026-03-09 |         1 |
+|       2 | 2026-02-02 |         2 |
+|       3 | 2025-03-04 |         1 |
+|       4 | 2026-03-09 |         4 |
++---------+------------+-----------+
+4 rows in set (0.0015 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > desc venta_detalle;
++-----------------+------+------+-----+---------+----------------+
+| Field           | Type | Null | Key | Default | Extra          |
++-----------------+------+------+-----+---------+----------------+
+| idventa_detalle | int  | NO   | PRI | NULL    | auto_increment |
+| idventa         | int  | NO   |     | NULL    |                |
+| idproducto      | int  | NO   |     | NULL    |                |
+| cantidad        | int  | NO   |     | NULL    |                |
++-----------------+------+------+-----+---------+----------------+
+4 rows in set (0.0038 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL > insert into venta_detalle(idventa, idproducto, cantidad) values(1, 1, 5), (1, 2, 2), (1, 3, 1), (2, 1,5), (3, 2, 1);
+Query OK, 5 rows affected (0.0083 sec)
+
+Records: 5  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  taller2  SQL > select * from venta_detalle;
++-----------------+---------+------------+----------+
+| idventa_detalle | idventa | idproducto | cantidad |
++-----------------+---------+------------+----------+
+|               1 |       1 |          1 |        5 |
+|               2 |       1 |          2 |        2 |
+|               3 |       1 |          3 |        1 |
+|               4 |       2 |          1 |        5 |
+|               5 |       3 |          2 |        1 |
++-----------------+---------+------------+----------+
+5 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  taller2  SQL >
