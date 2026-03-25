@@ -1,0 +1,313 @@
+MySQL Shell 8.0.45
+
+Copyright (c) 2016, 2026, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 8.0.45 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > use sakila;
+Default schema set to `sakila`.
+Fetching global names, object names from `sakila` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  sakila  SQL > show create tables;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tables' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > show tables;
++----------------------------+
+| Tables_in_sakila           |
++----------------------------+
+| actor                      |
+| actor_info                 |
+| address                    |
+| category                   |
+| city                       |
+| country                    |
+| customer                   |
+| customer_list              |
+| film                       |
+| film_actor                 |
+| film_category              |
+| film_list                  |
+| film_text                  |
+| inventory                  |
+| language                   |
+| nicer_but_slower_film_list |
+| payment                    |
+| rental                     |
+| sales_by_film_category     |
+| sales_by_store             |
+| staff                      |
+| staff_list                 |
+| store                      |
++----------------------------+
+23 rows in set (0.0028 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.payment id, d.film, d.title, sum(a.amount) as total
+                                       -> from payment a, rental b, inventory c, film d
+                                       -> where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id
+                                       -> group by d.film_id;
+ERROR: 1054 (42S22): Unknown column 'a.payment' in 'field list'
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.payment_id, d.film, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id;
+ERROR: 1054 (42S22): Unknown column 'd.film' in 'field list'
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.payment_id, d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id;
+ERROR: 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'sakila.a.payment_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id limit 20;
++---------+---------------------+--------+
+| film_id | title               | total  |
++---------+---------------------+--------+
+|       1 | ACADEMY DINOSAUR    |  36.77 |
+|       2 | ACE GOLDFINGER      |  52.93 |
+|       3 | ADAPTATION HOLES    |  37.88 |
+|       4 | AFFAIR PREJUDICE    |  91.77 |
+|       5 | AFRICAN EGG         |  51.88 |
+|       6 | AGENT TRUMAN        | 126.79 |
+|       7 | AIRPLANE SIERRA     |  82.85 |
+|       8 | AIRPORT POLLOCK     | 102.82 |
+|       9 | ALABAMA DEVIL       |  71.88 |
+|      10 | ALADDIN CALENDAR    | 131.77 |
+|      11 | ALAMO VIDEOTAPE     |  35.76 |
+|      12 | ALASKA PHANTOM      |  44.74 |
+|      13 | ALI FOREVER         |  54.91 |
+|      15 | ALIEN CENTER        |  90.78 |
+|      16 | ALLEY EVOLUTION     |  52.86 |
+|      17 | ALONE TRIP          |  62.82 |
+|      18 | ALTER VICTORY       |  32.78 |
+|      19 | AMADEUS HOLY        |  33.79 |
+|      20 | AMELIE HELLFIGHTERS |  67.90 |
+|      21 | AMERICAN CIRCUS     | 167.78 |
++---------+---------------------+--------+
+20 rows in set (0.0618 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id limit 20;
++---------+---------------------+--------+
+| film_id | title               | total  |
++---------+---------------------+--------+
+|       1 | ACADEMY DINOSAUR    |  36.77 |
+|       2 | ACE GOLDFINGER      |  52.93 |
+|       3 | ADAPTATION HOLES    |  37.88 |
+|       4 | AFFAIR PREJUDICE    |  91.77 |
+|       5 | AFRICAN EGG         |  51.88 |
+|       6 | AGENT TRUMAN        | 126.79 |
+|       7 | AIRPLANE SIERRA     |  82.85 |
+|       8 | AIRPORT POLLOCK     | 102.82 |
+|       9 | ALABAMA DEVIL       |  71.88 |
+|      10 | ALADDIN CALENDAR    | 131.77 |
+|      11 | ALAMO VIDEOTAPE     |  35.76 |
+|      12 | ALASKA PHANTOM      |  44.74 |
+|      13 | ALI FOREVER         |  54.91 |
+|      15 | ALIEN CENTER        |  90.78 |
+|      16 | ALLEY EVOLUTION     |  52.86 |
+|      17 | ALONE TRIP          |  62.82 |
+|      18 | ALTER VICTORY       |  32.78 |
+|      19 | AMADEUS HOLY        |  33.79 |
+|      20 | AMELIE HELLFIGHTERS |  67.90 |
+|      21 | AMERICAN CIRCUS     | 167.78 |
++---------+---------------------+--------+
+20 rows in set (0.0037 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id limit 20
+                                       -> order by total asc;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'order by total asc' at line 2
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total desc limit 20;
++---------+--------------------+--------+
+| film_id | title              | total  |
++---------+--------------------+--------+
+|     879 | TELEGRAPH VOYAGE   | 231.73 |
+|     973 | WIFE TURN          | 223.69 |
+|    1000 | ZORRO ARK          | 214.69 |
+|     369 | GOODFELLAS SALUTE  | 209.69 |
+|     764 | SATURDAY LAMBS     | 204.72 |
+|     893 | TITANS JERK        | 201.71 |
+|     897 | TORQUE BOUND       | 198.72 |
+|     403 | HARRY IDAHO        | 195.70 |
+|     460 | INNOCENT USUAL     | 191.74 |
+|     444 | HUSTLER PARTY      | 190.78 |
+|     670 | PELICAN COMFORTS   | 188.74 |
+|     127 | CAT CONEHEADS      | 181.70 |
+|     284 | ENEMY ODDS         | 180.71 |
+|     103 | BUCKET BROTHERHOOD | 180.66 |
+|     715 | RANGE MOONWALKER   | 179.73 |
+|     563 | MASSACRE USUAL     | 179.70 |
+|     941 | VIDEOTAPE ARSENIC  | 178.71 |
+|     239 | DOGMA FAMILY       | 178.70 |
+|      31 | APACHE DIVINE      | 178.69 |
+|     938 | VELVET TERMINATOR  | 177.74 |
++---------+--------------------+--------+
+20 rows in set (0.0932 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, sum(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;
++---------+------------------------+-------+
+| film_id | title                  | total |
++---------+------------------------+-------+
+|     635 | OKLAHOMA JUMANJI       |  5.94 |
+|     885 | TEXAS WATCH            |  5.94 |
+|     335 | FREEDOM CLEOPATRA      |  5.95 |
+|     261 | DUFFEL APOCALYPSE      |  6.93 |
+|     996 | YOUNG LANGUAGE         |  6.93 |
+|     718 | REBEL AIRPORT          |  7.92 |
+|     196 | CRUELTY UNFORGIVEN     |  7.93 |
+|     475 | JAPANESE RUN           |  7.94 |
+|     839 | STALLION SUNDANCE      |  8.93 |
+|     523 | LIGHTS DEER            |  9.92 |
+|     401 | HAROLD FRENCH          |  9.92 |
+|     168 | COMANCHEROS ENEMY      |  9.94 |
+|      52 | BALLROOM MOCKINGBIRD   | 10.92 |
+|     178 | CONNECTION MICROCOSMOS | 10.93 |
+|     157 | CLOCKWORK PARADISE     | 11.90 |
+|     477 | JAWBREAKER BROOKLYN    | 11.90 |
+|     355 | GHOSTBUSTERS ELF       | 11.91 |
+|     594 | MONTEZUMA COMMAND      | 11.91 |
+|     566 | MAUDE MOD              | 11.92 |
+|     899 | TOWERS HURRICANE       | 12.89 |
++---------+------------------------+-------+
+20 rows in set (0.0537 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > desc payment;
++--------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| Field        | Type              | Null | Key | Default           | Extra                                         |
++--------------+-------------------+------+-----+-------------------+-----------------------------------------------+
+| payment_id   | smallint unsigned | NO   | PRI | NULL              | auto_increment                                |
+| customer_id  | smallint unsigned | NO   | MUL | NULL              |                                               |
+| staff_id     | tinyint unsigned  | NO   | MUL | NULL              |                                               |
+| rental_id    | int               | YES  | MUL | NULL              |                                               |
+| amount       | decimal(5,2)      | NO   jff;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'jff' at line 1and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20; ry c, film d where a.rental_id
+ MySQL  localhost:3306 ssl  sakila  SQL > jkdsh;d and c. film_id = d.film_id group by d.film_id order by total desc limit 20;ry c, film d where a.rental_id
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'jkdsh' at line 1d b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;ory c, film d where a.rental_id
+ MySQL  localhost:3306 ssl  sakila  SQL > ndjs;id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ndjs' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > desc film;
++----------------------+---------------------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| Field                | Type                                                                | Null | Key | Default           | Extra                                         |
++----------------------+---------------------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| film_id              | smallint unsigned                                                   | NO   | PRI | NULL              | auto_increment                                |
+| title                | varchar(128)                                                        | NO   | MUL | NULL              |                                               |
+| description          | text                                                                | YES  |     | NULL              |                                               |
+| release_year         | year                                                                | YES  |     | NULL              |                                               |
+| language_id          | tinyint unsigned                                                    | NO   | MUL | NULL              |                                               |
+| original_language_id | tinyint unsigned                                                    | YES  | MUL | NULL              |                                               |
+| rental_duration      | tinyint unsigned                                                    | NO   |     | 3                 |                                               |
+| rental_rate          | decimal(4,2)                                                        | NO   |     | 4.99              |                                               |
+| length               | smallint unsigned                                                   | YES  |     | NULL              |                                               |
+| replacement_cost     | decimal(5,2)                                                        | NO   |     | 19.99             |                                               |
+| rating               | enum('G','PG','PG-13','R','NC-17')                                  | YES  |     | G                 |                                               |
+| special_features     | set('Trailers','Commentaries','Deleted Scenes','Behind the Scenes') | YES  |     | NULL              |                                               |
+| last_update          | timestamp                                                           | NO   |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++----------------------+---------------------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+13 rows in set (0.0046 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > desc category;
++-------------+------------------+------+-----+-------------------+-----------------------------------------------+
+| Field       | Type             | Null | Key | Default           | Extra                                         |
++-------------+------------------+------+-----+-------------------+-----------------------------------------------+
+| category_id | tinyint unsigned | NO   | PRI | NULL              | auto_increment                                |
+| name        | varchar(25)      | NO   |     | NULL              |                                               |
+| last_update | timestamp        | NO   |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
++-------------+------------------+------+-----+-------------------+-----------------------------------------------+
+3 rows in set (0.0026 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, acount(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;
+ERROR: 1305 (42000): FUNCTION sakila.acount does not exist
+ MySQL  localhost:3306 ssl  sakila  SQL > select d.film_id, d.title, count(a.amount) as total from payment a, rental b, inventory c, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;
++---------+----------------------+-------+
+| film_id | title                | total |
++---------+----------------------+-------+
+|     584 | MIXED DOORS          |     4 |
+|     400 | HARDLY ROBBERS       |     4 |
+|     904 | TRAIN BUNCH          |     4 |
+|     107 | BUNCH MINDS          |     5 |
+|     310 | FEVER EMPIRE         |     5 |
+|     903 | TRAFFIC HOBBIT       |     5 |
+|      94 | BRAVEHEART HUMAN     |     5 |
+|     459 | INFORMER DOUBLE      |     5 |
+|     558 | MANNEQUIN WORST      |     5 |
+|     180 | CONSPIRACY SPIRIT    |     5 |
+|     362 | GLORY TRACY          |     5 |
+|     612 | MUSSOLINI SPOILERS   |     5 |
+|     343 | FULL FLATLINERS      |     5 |
+|     335 | FREEDOM CLEOPATRA    |     5 |
+|     441 | HUNTER ALTER         |     5 |
+|     699 | PRIVATE DROP         |     5 |
+|     781 | SEVEN SWARM          |     5 |
+|     399 | HAPPINESS UNITED     |     6 |
+|     125 | CASSIDY WYOMING      |     6 |
+|      32 | APOCALYPSE FLAMINGOS |     6 |
++---------+----------------------+-------+
+20 rows in set (0.0631 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select c.category_id, d.film_id, d.title, count(a.amount) as total from payment a, film d where a.rental_id = b.rental_id and b.inventory_id = c.inventory_id and c. film_id = d.film_id group by d.film_id order by total asc limit 20;
+ERROR: 1054 (42S22): Unknown column 'c.category_id' in 'field list'
+ MySQL  localhost:3306 ssl  sakila  SQL > deesc category film;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'deesc category film' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > desc category film;
+Empty set (0.0032 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > desc category_film;
+ERROR: 1146 (42S02): Table 'sakila.category_film' doesn't exist
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and a.film_id = a.film_id and c order by total asc limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(b.film_id) as film from category a, film_category b, film c where a.catego' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and a.film_id = a.film_id order by total asc limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(b.film_id) as film from category a, film_category b, film c where a.catego' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and b.film_id = b.film_id order by total asc limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(b.film_id) as film from category a, film_category b, film c where a.catego' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and b.film_id = b.film_id and c.film_id = c.film_id group by c.film_id order by total asc limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(b.film_id) as film from category a, film_category b, film c where a.catego' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and b.film_id = b.film_id and c.film_id = c.film_id group by c.film_id limit 20;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'count(b.film_id) as film from category a, film_category b, film c where a.catego' at line 1
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name, count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and b.film_id = b.film_id and c.film_id = c.film_id group by c.film_id limit 20;
+ERROR: 1055 (42000): Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'sakila.a.category_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name, count(b.film_id) as film from category a, film_category b, film c where a.category_id = a.category_id and b.film_id = b.film_id and c.film_id = c.film_id group by a.category_id limit 20;
++-------------+-------------+---------+
+| category_id | name        | film    |
++-------------+-------------+---------+
+|           1 | Action      | 1000000 |
+|           2 | Animation   | 1000000 |
+|           3 | Children    | 1000000 |
+|           4 | Classics    | 1000000 |
+|           5 | Comedy      | 1000000 |
+|           6 | Documentary | 1000000 |
+|           7 | Drama       | 1000000 |
+|           8 | Family      | 1000000 |
+|           9 | Foreign     | 1000000 |
+|          10 | Games       | 1000000 |
+|          11 | Horror      | 1000000 |
+|          12 | Music       | 1000000 |
+|          13 | New         | 1000000 |
+|          14 | Sci-Fi      | 1000000 |
+|          15 | Sports      | 1000000 |
+|          16 | Travel      | 1000000 |
++-------------+-------------+---------+
+16 rows in set (3.3350 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.category_id, a.name, count(b.film_id) as film from category a, film_category b, film c where a.category_id = b.category_id and b.film_id = c.film_id group by a.category_id limit 20;
++-------------+-------------+------+
+| category_id | name        | film |
++-------------+-------------+------+
+|           1 | Action      |   64 |
+|           2 | Animation   |   66 |
+|           3 | Children    |   60 |
+|           4 | Classics    |   57 |
+|           5 | Comedy      |   58 |
+|           6 | Documentary |   68 |
+|           7 | Drama       |   62 |
+|           8 | Family      |   69 |
+|           9 | Foreign     |   73 |
+|          10 | Games       |   61 |
+|          11 | Horror      |   56 |
+|          12 | Music       |   51 |
+|          13 | New         |   63 |
+|          14 | Sci-Fi      |   61 |
+|          15 | Sports      |   74 |
+|          16 | Travel      |   57 |
++-------------+-------------+------+
+16 rows in set (0.0020 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.staff_id, a.first_name, sum(b.amount) as total from staff a, payment b, payment c where a.staff_id = b.staff_id group by a.category_id limit 20;
+ERROR: 1054 (42S22): Unknown column 'a.category_id' in 'group statement'
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.staff_id, a.first_name, sum(b.amount) as total from staff a, payment b, payment c where a.staff_id = b.staff_id group by a.staff_id limit 20;
+-- query aborted
+ERROR: 1317 (70100): Query execution was interrupted
+ MySQL  localhost:3306 ssl  sakila  SQL > select a.staff_id, a.first_name, sum(b.amount) as total from staff a, payment b where a.staff_id = b.staff_id group by a.staff_id limit 20;
++----------+------------+----------+
+| staff_id | first_name | total    |
++----------+------------+----------+
+|        1 | Mike       | 33482.50 |
+|        2 | Jon        | 33924.06 |
++----------+------------+----------+
+2 rows in set (0.0191 sec)
+ MySQL  localhost:3306 ssl  sakila  SQL >
